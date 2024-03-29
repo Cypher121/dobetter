@@ -6,16 +6,15 @@ import kotlin.test.Test
 class Tests {
     @Test fun maybeTest() {
         val a = maybe {
-            val x = Maybe.Some(1).bind()
-            val y = Maybe.Some(2).bind()
+            val (x, y) = (Maybe.of(1) to Maybe.of(2)).bind()
 
             x + y
         }
 
-        require(a == Maybe.Some(3))
+        require(a == Maybe.of(3))
 
         val b = Maybe.Type.evaluate {
-            val x = Maybe.Some(1).bind()
+            val x = Maybe.of(1).bind()
             val y = Maybe.None.bind<Int>()
 
             x + y
