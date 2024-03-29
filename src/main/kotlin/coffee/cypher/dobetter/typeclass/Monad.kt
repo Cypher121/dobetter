@@ -1,10 +1,10 @@
 package coffee.cypher.dobetter.typeclass
 
-interface Monad<out T> : Applicative<T> {
-    interface Type : Applicative.Type {
+public interface Monad<out T> : Applicative<T> {
+    public interface Type : Applicative.Type {
         override fun <T> pure(v: T): Monad<T>
 
-        fun <T, U> bind(m: Monad<T>, f: (T) -> Monad<U>): Monad<U>
+        public fun <T, U> bind(m: Monad<T>, f: (T) -> Monad<U>): Monad<U>
 
         override fun <T, U, V> liftA2(f: (T, U) -> V, a: Applicative<T>, b: Applicative<U>): Applicative<V> {
             return bind(a.downcast<T, Monad<T>>()) { t ->

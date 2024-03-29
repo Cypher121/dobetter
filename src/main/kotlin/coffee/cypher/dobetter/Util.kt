@@ -9,7 +9,7 @@ private val UNSAFE = Class.forName("sun.misc.Unsafe")
     .get(null) as sun.misc.Unsafe
 
 @Suppress("UNCHECKED_CAST")
-fun <T : Any> clone(obj: T): T {
+internal fun <T : Any> clone(obj: T): T {
     val clazz = obj::class.java
     val copy = UNSAFE.allocateInstance(clazz) as T
     copyDeclaredFields(obj, copy, clazz)
@@ -38,7 +38,7 @@ private val safeContinuationDelegateField = safeContinuationClass.getDeclaredFie
     it.isAccessible = true
 }
 
-tailrec fun <T> Continuation<T>.toUnsafe(): Continuation<T> {
+internal tailrec fun <T> Continuation<T>.toUnsafe(): Continuation<T> {
     return if (safeContinuationClass.isInstance(this)) {
         @Suppress("UNCHECKED_CAST")
         (safeContinuationDelegateField.get(this) as Continuation<T>).toUnsafe()

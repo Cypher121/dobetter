@@ -8,15 +8,15 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-fun interface Cont<R, A> : Monad<A> {
-    fun runCont(f: (A) -> R): R
+public fun interface Cont<R, A> : Monad<A> {
+    public fun runCont(f: (A) -> R): R
 
-    class Type<R> : Monad.Type {
-        override fun <T> pure(v: T) = Cont<R, T> {
+    public class Type<R> : Monad.Type {
+        override fun <T> pure(v: T): Cont<R, T> = Cont{
             it(v)
         }
 
-        override fun <T, U> bind(m: Monad<T>, f: (T) -> Monad<U>) =
+        override fun <T, U> bind(m: Monad<T>, f: (T) -> Monad<U>): Cont<R, U> =
             Cont {
                 m.downcast<T, Cont<R, T>>()
                     .runCont { t ->
@@ -35,7 +35,7 @@ private fun <R, A> Cont<R, A>.runContInPlace(f: (A) -> R): R {
     return runCont(f)
 }
 
-fun <R, T> Cont<Unit, T>.typed(): Cont<R, T> = Cont { f ->
+public fun <R, T> Cont<Unit, T>.typed(): Cont<R, T> = Cont { f ->
     var result: R
 
     runContInPlace {
@@ -45,4 +45,5 @@ fun <R, T> Cont<Unit, T>.typed(): Cont<R, T> = Cont { f ->
     result
 }
 
-fun <R, T> cont(f: suspend ComputationContext<T>.() -> T): Cont<R, T> = Cont.Type<R>().evaluate(f)
+public fun <R, T> cont(f: suspend ComputationContext<T>.() -> T): Cont<R, T> =
+    Cont.Type<R>().evaluate(f)
