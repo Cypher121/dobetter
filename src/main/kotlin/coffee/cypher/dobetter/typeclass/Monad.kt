@@ -7,8 +7,8 @@ interface Monad<out T> : Applicative<T> {
         fun <T, U> bind(m: Monad<T>, f: (T) -> Monad<U>): Monad<U>
 
         override fun <T, U, V> liftA2(f: (T, U) -> V, a: Applicative<T>, b: Applicative<U>): Applicative<V> {
-            return bind(a as Monad<T>) { t ->
-                bind(b as Monad<U>) { u ->
+            return bind(a.downcast<T, Monad<T>>()) { t ->
+                bind(b.downcast<U, Monad<U>>()) { u ->
                     pure(f(t, u))
                 }
             }
