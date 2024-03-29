@@ -10,7 +10,7 @@ interface Applicative<out T> : Functor<T> {
             return liftA2({ x, y -> x(y) }, f, a)
         }
 
-        override fun <T, U> fmap(f: (T) -> U, a: Functor<T>) =
+        override fun <T, U> fmap(f: (T) -> U, a: Functor<T>): Applicative<U> =
             sequence(pure(f), a.downcast())
     }
 }

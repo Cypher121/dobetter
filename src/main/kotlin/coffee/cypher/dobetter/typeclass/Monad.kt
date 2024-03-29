@@ -13,5 +13,7 @@ interface Monad<out T> : Applicative<T> {
                 }
             }
         }
+
+        override fun <T, U> fmap(f: (T) -> U, a: Functor<T>): Monad<U> = super.fmap(f, a).downcast()
     }
 }
