@@ -37,7 +37,6 @@ public data class ZipList<T>(val value: List<T>) : Applicative<T> {
 
         override fun <T> sequence(m: Applicative<T>): MList<T> =
             m.downcast<T, ZipList<T>>().value.let(::MList)
-
     }
 }
 

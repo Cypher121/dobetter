@@ -16,9 +16,6 @@ public class ComputationContext<T, MT : Monad.Type>(internal val type: MT) {
         }
     }
 
-    public suspend fun <U, V> Pair<Monad<U>, Monad<V>>.bind(): Pair<U, V> =
-        type.liftA2(::Pair, first, second).bind()
-
     private fun handleDone(value: T) {
         result = type.pure(value)
     }
