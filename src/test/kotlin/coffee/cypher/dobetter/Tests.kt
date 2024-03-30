@@ -8,7 +8,8 @@ class Tests {
     @Test
     fun maybeTest() {
         val a = maybe {
-            val (x, y) = (Maybe.of(1) to Maybe.of(2)).bind()
+            val x = Maybe.of(1).bind()
+            val y = Maybe.of(2).bind()
 
             x + y
         }
@@ -17,7 +18,7 @@ class Tests {
 
         val b = Maybe.Type.evaluate {
             val x = Maybe.of(1).bind()
-            val y = Maybe.None.bind<Int>()
+            val y = Maybe.ofNullable(null as Int?).bind()
 
             x + y
         }
