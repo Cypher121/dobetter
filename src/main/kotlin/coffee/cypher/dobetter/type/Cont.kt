@@ -12,7 +12,7 @@ public fun interface Cont<R, A> : Monad<A> {
     public fun runCont(f: (A) -> R): R
 
     public class Type<R> : Monad.Type {
-        override fun <T> pure(v: T): Cont<R, T> = Cont{
+        override fun <T> pure(v: T): Cont<R, T> = Cont {
             it(v)
         }
 

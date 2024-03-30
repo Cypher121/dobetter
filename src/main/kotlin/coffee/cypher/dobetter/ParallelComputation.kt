@@ -23,6 +23,6 @@ public fun <T, MT, P> List<Monad<T>>.parallel(): Monad<List<T>>
               P : Parallel<*, *>, P : Applicative.Type =
     type.parallelType.sequence(
         fold(type.parallelType.pure(emptyList())) { acc, m ->
-            type.parallelType.liftA2({ list, v -> list + v}, acc, type.parallel(m))
+            type.parallelType.liftA2({ list, v -> list + v }, acc, type.parallel(m))
         }
     )

@@ -5,7 +5,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class Tests {
-    @Test fun maybeTest() {
+    @Test
+    fun maybeTest() {
         val a = maybe {
             val (x, y) = (Maybe.of(1) to Maybe.of(2)).bind()
 
@@ -24,7 +25,8 @@ class Tests {
         assertEquals(Maybe.None, b)
     }
 
-    @Test fun stateTest() {
+    @Test
+    fun stateTest() {
         val readChar = State<String, Char> { it.drop(1) to it.first() }
 
         val c = state<String, String> {
@@ -38,7 +40,8 @@ class Tests {
         assertEquals("a, b, c", res)
     }
 
-    @Test fun listTest() {
+    @Test
+    fun listTest() {
         val d = list {
             val x = listOf(1, 2, 3).m.bind()
 
@@ -73,13 +76,13 @@ class Tests {
                 listOf(3, 4),
             )
         )
-        
+
         fun <T, U> zip(a: List<T>, b: List<U>): List<Pair<T, U>> {
             return list {
                 (a.m to b.m).parallel().bind()
             }
         }
-        
+
         assertEquals(
             listOf(
                 1 to 3,
@@ -92,7 +95,8 @@ class Tests {
         )
     }
 
-    @Test fun contTest() {
+    @Test
+    fun contTest() {
         val helloCont = Cont<Unit, String> {
             it("Hello")
         }

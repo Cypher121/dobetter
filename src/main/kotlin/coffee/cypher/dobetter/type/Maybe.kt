@@ -22,6 +22,7 @@ public sealed interface Maybe<out T> : Monad<T> {
     public companion object {
         public fun <T> of(value: T): Maybe<T> =
             Type.pure(value)
+
         public fun <T> ofNullable(value: T): Maybe<T & Any> =
             value?.let(::Some) ?: None
     }
