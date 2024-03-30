@@ -12,10 +12,10 @@ public value class MList<T>(public val value: List<T>) : Monad<T> {
                 .value
                 .flatMap {
                     f(it).downcast<U, MList<U>>().value
-                }.m
+                }.let(::MList)
 
         override fun <T> pure(v: T): MList<T> =
-            v.let(::listOf).m
+            v.let(::listOf).let(::MList)
 
         override fun <T> parallel(m: Monad<T>): ZipList<T> =
             m.downcast<T, MList<T>>().value.let(::ZipList)
@@ -44,5 +44,6 @@ public data class ZipList<T>(val value: List<T>) : Applicative<T> {
 public fun <T> list(f: suspend ComputationContext<T, MList.Type>.() -> T): List<T> =
     MList.Type.evaluate<T, MList<T>, MList.Type>(f).value
 
+context(ComputationContext<*, MList.Type>)
 public inline val <T> List<T>.m: MList<T>
     get() = let(::MList)
