@@ -22,5 +22,5 @@ public fun interface State<S, A> : Monad<A> {
     }
 }
 
-public fun <S, T> state(f: suspend ComputationContext<T>.() -> T): State<S, T> =
+public fun <S, T> state(f: suspend ComputationContext<T, State.Type<S>>.() -> T): State<S, T> =
     State.Type<S>().evaluate(f)

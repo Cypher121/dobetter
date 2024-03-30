@@ -30,5 +30,5 @@ public sealed interface Maybe<out T> : Monad<T> {
 public fun <T> Maybe<T>.getOrThrow(): T =
     downcast<T, Maybe.Some<T>>().value
 
-public fun <T : Any> maybe(f: suspend ComputationContext<T>.() -> T): Maybe<T> =
+public fun <T : Any> maybe(f: suspend ComputationContext<T, Maybe.Type>.() -> T): Maybe<T> =
     Maybe.Type.evaluate(f)

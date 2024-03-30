@@ -2,6 +2,7 @@ package coffee.cypher.dobetter
 
 import coffee.cypher.dobetter.type.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class Tests {
     @Test fun maybeTest() {
@@ -11,7 +12,7 @@ class Tests {
             x + y
         }
 
-        require(a == Maybe.of(3))
+        assertEquals(Maybe.of(3), a)
 
         val b = Maybe.Type.evaluate {
             val x = Maybe.of(1).bind()
@@ -20,7 +21,7 @@ class Tests {
             x + y
         }
 
-        require(b == Maybe.None)
+        assertEquals(Maybe.None, b)
     }
 
     @Test fun stateTest() {
@@ -33,8 +34,8 @@ class Tests {
         }
 
         val (rem, res) = c.run("abcd")
-        require(rem == "d")
-        require(res == "a, b, c")
+        assertEquals("d", rem)
+        assertEquals("a, b, c", res)
     }
 
     @Test fun listTest() {
@@ -44,7 +45,7 @@ class Tests {
             x * 2
         }
 
-        require(d == listOf(2, 4, 6))
+        assertEquals(listOf(2, 4, 6), d)
 
         fun <T> dup(list: List<T>): List<T> {
             return list {
@@ -60,15 +61,33 @@ class Tests {
             a.m.bind() to b.m.bind()
         }
 
-        require(
-            cross(
-                listOf(1, 2),
-                listOf(3, 4),
-            ) == listOf(
+        assertEquals(
+            listOf(
                 1 to 3,
                 1 to 4,
                 2 to 3,
                 2 to 4,
+            ),
+            cross(
+                listOf(1, 2),
+                listOf(3, 4),
+            )
+        )
+        
+        fun <T, U> zip(a: List<T>, b: List<U>): List<Pair<T, U>> {
+            return list {
+                (a.m to b.m).parallel().bind()
+            }
+        }
+        
+        assertEquals(
+            listOf(
+                1 to 3,
+                2 to 4,
+            ),
+            zip(
+                listOf(1, 2),
+                listOf(3, 4),
             )
         )
     }
@@ -86,6 +105,6 @@ class Tests {
             it.distinct()
         }
 
-        require(x == "Helo".toList())
+        assertEquals("Helo".toList(), x)
     }
 }

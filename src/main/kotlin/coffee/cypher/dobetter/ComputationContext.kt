@@ -5,7 +5,7 @@ import coffee.cypher.dobetter.typeclass.downcast
 import kotlin.coroutines.*
 
 @RestrictsSuspension
-public class ComputationContext<T>(private val type: Monad.Type) {
+public class ComputationContext<T, MT : Monad.Type>(internal val type: MT) {
     private lateinit var result: Monad<T>
 
     public suspend fun <U> Monad<U>.bind(): U {
@@ -29,7 +29,7 @@ public class ComputationContext<T>(private val type: Monad.Type) {
         return result
     }
 
-    internal fun evaluate(f: suspend ComputationContext<T>.() -> T): Monad<T> {
+    internal fun evaluate(f: suspend ComputationContext<T, MT>.() -> T): Monad<T> {
         f.startCoroutine(this, object : Continuation<T> {
             override val context = EmptyCoroutineContext
 
@@ -42,5 +42,5 @@ public class ComputationContext<T>(private val type: Monad.Type) {
     }
 }
 
-public fun <T, M : Monad<T>> Monad.Type.evaluate(f: suspend ComputationContext<T>.() -> T): M =
-    ComputationContext<T>(this).evaluate(f).downcast()
+public fun <T, M : Monad<T>, MT : Monad.Type> MT.evaluate(f: suspend ComputationContext<T, MT>.() -> T): M =
+    ComputationContext<T, MT>(this).evaluate(f).downcast()

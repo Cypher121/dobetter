@@ -45,5 +45,5 @@ public fun <R, T> Cont<Unit, T>.typed(): Cont<R, T> = Cont { f ->
     result
 }
 
-public fun <R, T> cont(f: suspend ComputationContext<T>.() -> T): Cont<R, T> =
+public fun <R, T> cont(f: suspend ComputationContext<T, Cont.Type<R>>.() -> T): Cont<R, T> =
     Cont.Type<R>().evaluate(f)
