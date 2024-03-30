@@ -3,6 +3,7 @@ package coffee.cypher.dobetter
 import coffee.cypher.dobetter.type.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class Tests {
     @Test
@@ -16,14 +17,14 @@ class Tests {
 
         assertEquals(Maybe.of(3), a)
 
-        val b = Maybe.Type.evaluate {
+        val b = Maybe.Type.evaluate<Int, Maybe<Int>, Maybe.Type> {
             val x = Maybe.of(1).bind()
             val y = Maybe.ofNullable(null as Int?).bind()
 
             x + y
         }
 
-        assertEquals(Maybe.None, b)
+        assertTrue(b.isNone)
     }
 
     @Test
