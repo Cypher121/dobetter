@@ -3,6 +3,7 @@ package coffee.cypher.dobetter
 import coffee.cypher.dobetter.type.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class Tests {
@@ -25,6 +26,19 @@ class Tests {
         }
 
         assertTrue(b.isNone)
+    }
+
+    @Test
+    fun testSomeOfNone() {
+        assertEquals(
+            Maybe.none(),
+            Maybe.of(Maybe.none()).getOrThrow()
+        )
+
+        assertNotEquals(
+            Maybe.none(),
+            Maybe.of(Maybe.none())
+        )
     }
 
     @Test

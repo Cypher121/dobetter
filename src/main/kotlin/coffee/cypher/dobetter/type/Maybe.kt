@@ -19,8 +19,19 @@ public value class Maybe<out T>(
         else
             ifNone()
 
+    public companion object {
+        private data object None
+        private val NONE: Maybe<Nothing> = Maybe(None)
+
+        public fun <T> of(value: T): Maybe<T> = Maybe(value)
+
+        public fun <T> ofNullable(value: T): Maybe<T & Any> = value?.let(::Maybe) ?: NONE
+
+        public fun none(): Maybe<Nothing> = NONE
+    }
+
     public object Type : Monad.Type {
-        override fun <T> pure(v: T): Maybe<T> = Maybe(v)
+        override fun <T> pure(v: T): Maybe<T> = of(v)
 
         override fun <T, U> bind(m: Monad<T>, f: (T) -> Monad<U>): Maybe<U> =
             m.downcast<T, Maybe<T>>().let { maybe ->
@@ -30,16 +41,6 @@ public value class Maybe<out T>(
                     f(maybe.value as T).downcast()
                 }
             }
-    }
-
-    public companion object {
-        private val NONE: Maybe<Nothing> = Maybe(Any())
-
-        public fun <T> of(value: T): Maybe<T> = Type.pure(value)
-
-        public fun <T> ofNullable(value: T): Maybe<T & Any> = value?.let(::Maybe) ?: NONE
-
-        public fun none(): Maybe<Nothing> = NONE
     }
 }
 
