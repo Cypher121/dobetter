@@ -24,7 +24,8 @@ public value class MList<T>(public val value: List<T>) : Monad<T> {
     }
 }
 
-public data class ZipList<T>(val value: List<T>) : Applicative<T> {
+@JvmInline
+public value class ZipList<T>(public val value: List<T>) : Applicative<T> {
     public object Type : Applicative.Type, Parallel<MList.Type, Type> {
         override fun <T> pure(v: T): Applicative<T> =
             ZipList(listOf(v))
