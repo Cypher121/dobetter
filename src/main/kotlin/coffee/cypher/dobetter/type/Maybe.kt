@@ -5,13 +5,11 @@ import coffee.cypher.dobetter.evaluate
 import coffee.cypher.dobetter.typeclass.Monad
 import coffee.cypher.dobetter.typeclass.downcast
 
-private object None
-
 @JvmInline
 @Suppress("UNCHECKED_CAST")
 public value class Maybe<out T>(private val value: Any?) : Monad<T> {
-    public val isSome: Boolean get() = value != None
-    public val isNone: Boolean get() = value == None
+    public val isSome: Boolean get() = this != NONE
+    public val isNone: Boolean get() = this == NONE
 
     public fun getOrThrow(): T =
         if (isSome) {
@@ -25,8 +23,8 @@ public value class Maybe<out T>(private val value: Any?) : Monad<T> {
 
         override fun <T, U> bind(m: Monad<T>, f: (T) -> Monad<U>): Maybe<U> =
             m.downcast<T, Maybe<T>>().let { maybe ->
-                if (maybe.value == None) {
-                    maybe as Maybe<U>
+                if (maybe == NONE) {
+                    NONE
                 } else {
                     f(maybe.value as T).downcast()
                 }
@@ -34,11 +32,13 @@ public value class Maybe<out T>(private val value: Any?) : Monad<T> {
     }
 
     public companion object {
+        private val NONE: Maybe<Nothing> = Maybe(Any())
+
         public fun <T> of(value: T): Maybe<T> = Type.pure(value)
 
-        public fun <T> ofNullable(value: T): Maybe<T & Any> = Maybe(value ?: None)
+        public fun <T> ofNullable(value: T): Maybe<T & Any> = value?.let(::Maybe) ?: NONE
 
-        public fun none(): Maybe<Nothing> = Maybe(None)
+        public fun none(): Maybe<Nothing> = NONE
     }
 }
 
