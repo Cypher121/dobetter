@@ -7,16 +7,17 @@ import coffee.cypher.dobetter.typeclass.downcast
 
 @JvmInline
 @Suppress("UNCHECKED_CAST")
-public value class Maybe<out T>(private val value: Any?) : Monad<T> {
+public value class Maybe<out T>(
+    @PublishedApi internal val value: Any?
+) : Monad<T> {
     public val isSome: Boolean get() = this != NONE
     public val isNone: Boolean get() = this == NONE
 
-    public fun getOrThrow(): T =
-        if (isSome) {
-            value as T
-        } else {
-            throw NoSuchElementException()
-        }
+    public inline fun <R> fold(ifSome: (T) -> R, ifNone: () -> R): R =
+        if (isSome)
+            ifSome(value as T)
+        else
+            ifNone()
 
     public object Type : Monad.Type {
         override fun <T> pure(v: T): Maybe<T> = Maybe(v)
@@ -42,12 +43,9 @@ public value class Maybe<out T>(private val value: Any?) : Monad<T> {
     }
 }
 
-public fun <T> Maybe<T>.getOrNull(): T? =
-    if (isSome) {
-        getOrThrow()
-    } else {
-        null
-    }
+public fun <T> Maybe<T>.getOrThrow(): T = fold({ it }, { throw NoSuchElementException() })
+
+public fun <T> Maybe<T>.getOrNull(): T? = fold({ it }, { null })
 
 public fun <T : Any> maybe(f: suspend ComputationContext<T, Maybe.Type>.() -> T): Maybe<T> =
     Maybe.Type.evaluate(f)
